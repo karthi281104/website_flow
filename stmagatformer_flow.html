@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ST-MAGATFormer Full Project Flow</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap');
+:root{--bg:#060910;--card:#111820;--border:#1e2d3d;--accent1:#00d4ff;--accent2:#7c3aed;--accent3:#10b981;--accent4:#f59e0b;--accent5:#ef4444;--text:#e2e8f0;--muted:#64748b;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,212,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,0.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
+.wrap{max-width:1200px;margin:0 auto;padding:40px 24px;position:relative;z-index:1;}
+.hd{text-align:center;margin-bottom:60px;}
+.hd .lbl{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:4px;color:var(--accent1);text-transform:uppercase;margin-bottom:12px;}
+.hd h1{font-size:clamp(26px,5vw,46px);font-weight:800;background:linear-gradient(135deg,#fff,var(--accent1),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.1;margin-bottom:10px;}
+.hd p{color:var(--muted);font-size:13px;font-family:'JetBrains Mono',monospace;}
+.ph{margin-bottom:30px;}
+.ph-hd{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.ph-num{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;padding:4px 10px;border-radius:4px;letter-spacing:1px;}
+.ph-ttl{font-size:17px;font-weight:700;}
+.ph-ln{flex:1;height:1px;background:var(--border);}
+.grid{display:grid;gap:10px;}
+.g2{grid-template-columns:repeat(auto-fit,minmax(270px,1fr));}
+.g3{grid-template-columns:repeat(auto-fit,minmax(210px,1fr));}
+.g4{grid-template-columns:repeat(auto-fit,minmax(190px,1fr));}
+.g5{grid-template-columns:repeat(auto-fit,minmax(170px,1fr));}
+.c{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px;position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s;}
+.c:hover{transform:translateY(-2px);}
+.c::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.b .c::before,.b{border-color:rgba(0,212,255,.25);}.b:hover{border-color:var(--accent1);box-shadow:0 8px 24px rgba(0,212,255,.12);}
+.p .c::before,.p{border-color:rgba(124,58,237,.25);}.p:hover{border-color:var(--accent2);box-shadow:0 8px 24px rgba(124,58,237,.12);}
+.g .c::before,.g{border-color:rgba(16,185,129,.25);}.g:hover{border-color:var(--accent3);box-shadow:0 8px 24px rgba(16,185,129,.12);}
+.a .c::before,.a{border-color:rgba(245,158,11,.25);}.a:hover{border-color:var(--accent4);box-shadow:0 8px 24px rgba(245,158,11,.12);}
+.r .c::before,.r{border-color:rgba(239,68,68,.25);}.r:hover{border-color:var(--accent5);box-shadow:0 8px 24px rgba(239,68,68,.12);}
+.b::before{background:var(--accent1);}.p::before{background:var(--accent2);}.g::before{background:var(--accent3);}.a::before{background:var(--accent4);}.r::before{background:var(--accent5);}
+.ct{font-size:12px;font-weight:700;margin-bottom:7px;color:#f1f5f9;}
+.cb{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--muted);line-height:1.65;}
+.cb strong{color:#94a3b8;}
+.tg{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:9.5px;padding:2px 7px;border-radius:3px;margin-bottom:6px;font-weight:600;}
+.b .tg{background:rgba(0,212,255,.1);color:var(--accent1);}
+.p .tg{background:rgba(124,58,237,.1);color:#a78bfa;}
+.g .tg{background:rgba(16,185,129,.1);color:var(--accent3);}
+.a .tg{background:rgba(245,158,11,.1);color:var(--accent4);}
+.r .tg{background:rgba(239,68,68,.1);color:var(--accent5);}
+.arr{display:flex;justify-content:center;margin:2px 0 18px;color:var(--muted);font-size:18px;animation:pulse 2s infinite;}
+.out-wrap{background:linear-gradient(135deg,rgba(0,212,255,.04),rgba(124,58,237,.04));border:1px solid rgba(0,212,255,.18);border-radius:12px;padding:24px;margin-top:6px;}
+.out-sec{margin-bottom:22px;}
+.out-sec:last-child{margin-bottom:0;}
+.out-ttl{font-size:12px;font-weight:700;letter-spacing:1px;margin-bottom:10px;}
+.tbl{width:100%;border-collapse:collapse;font-family:'JetBrains Mono',monospace;font-size:10.5px;}
+.tbl th{background:rgba(0,212,255,.07);color:var(--accent1);padding:7px 10px;text-align:left;font-weight:600;border-bottom:1px solid var(--border);}
+.tbl td{padding:7px 10px;border-bottom:1px solid rgba(255,255,255,.04);color:var(--muted);}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl td:first-child{color:#94a3b8;font-weight:600;}
+.hi{color:var(--accent3);}
+.cl{list-style:none;}
+.cl li{display:flex;align-items:flex-start;gap:9px;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--muted);padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);line-height:1.5;}
+.cl li:last-child{border-bottom:none;}
+.ck{color:var(--accent3);flex-shrink:0;margin-top:1px;}
+.cl li strong{color:#94a3b8;}
+.dc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:9px;}
+.dc{background:var(--card);border:1px solid var(--border);border-radius:9px;padding:14px;text-align:center;}
+.dc .rule{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--accent1);margin-bottom:7px;line-height:1.6;}
+.dc .out{font-size:11px;font-weight:700;color:#f1f5f9;}
+.st-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:9px;margin-top:6px;}
+.st-row{display:flex;align-items:center;gap:9px;background:var(--card);border:1px solid var(--border);border-radius:7px;padding:9px 12px;font-family:'JetBrains Mono',monospace;font-size:10.5px;}
+.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.dg{background:var(--accent3);box-shadow:0 0 5px var(--accent3);}
+.dy{background:var(--accent4);box-shadow:0 0 5px var(--accent4);}
+.dr{background:var(--accent5);box-shadow:0 0 5px var(--accent5);}
+.sn{color:#94a3b8;flex:1;}
+.sv{color:var(--muted);}
+@keyframes pulse{0%,100%{opacity:.4;}50%{opacity:1;}}
+@media(max-width:600px){.g4,.g5{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hd">
+  <div class="lbl">EEG Deep Learning Framework</div>
+  <h1>ST-MAGATFormer<br>Complete Project Flow</h1>
+  <p>// Input → Preprocessing → Features → Models → Outputs → Classification</p>
+</div>
+
+<!-- P1 -->
+<div class="ph">
+  <div class="ph-hd"><span class="ph-num" style="background:rgba(0,212,255,.1);color:var(--accent1)">PHASE 01</span><span class="ph-ttl">Datasets & Raw Input</span><div class="ph-ln"></div></div>
+  <div class="grid g3">
+    <div class="c b"><div class="tg">EEG only</div><div class="ct">🧠 Deep EEG Dataset</div><div class="cb">Large-scale representation learning<br><strong>Input:</strong> Raw EEG signals<br><strong>Task:</strong> Affective / Cognitive<br><strong>Heads active:</strong> Aff + Cog</div></div>
+    <div class="c p"><div class="tg">Multimodal</div><div class="ct">📡 PhyAAt Dataset</div><div class="cb">Affective–cognitive analysis<br><strong>Input:</strong> EEG + GSR + PPG<br><strong>Task:</strong> Affective + Cognitive<br><strong>Heads active:</strong> Aff + Cog</div></div>
+    <div class="c r"><div class="tg">Clinical</div><div class="ct">🏥 Clinical Dataset</div><div class="cb">Neuropsychiatric screening<br><strong>Input:</strong> EEG ± clinical labels<br><strong>Task:</strong> Disorder risk<br><strong>Heads active:</strong> All 3 heads</div></div>
+  </div>
+</div>
+<div class="arr">↓</div>
+
+<!-- P2 -->
+<div class="ph">
+  <div class="ph-hd"><span class="ph-num" style="background:rgba(0,212,255,.1);color:var(--accent1)">PHASE 02</span><span class="ph-ttl">Signal Preprocessing</span><div class="ph-ln"></div></div>
+  <div class="grid g4">
+    <div class="c b"><div class="ct">🔉 Bandpass Filter</div><div class="cb">0.5–45 Hz<br>Removes noise & drift<br><strong>Output:</strong> Filtered signal</div></div>
+    <div class="c b"><div class="ct">🧹 Artifact Removal</div><div class="cb">ICA / ASR method<br>Removes eye/muscle noise<br><strong>Output:</strong> Clean EEG</div></div>
+    <div class="c b"><div class="ct">📏 Z-Score Normalize</div><div class="cb">Per channel normalization<br>Zero mean, unit variance<br><strong>Output:</strong> Normalized signal</div></div>
+    <div class="c b"><div class="ct">🪟 Windowing</div><div class="cb">3–5s windows, 50% overlap<br>Each window = 1 sample<br><strong>Output:</strong> Window array C×T</div></div>
+  </div>
+  <div class="grid g3" style="margin-top:10px">
+    <div class="c p"><div class="ct">GSR — PhyAAt only</div><div class="cb">Tonic–phasic decomposition<br>→ aligned to EEG windows</div></div>
+    <div class="c p"><div class="ct">PPG — PhyAAt only</div><div class="cb">HRV extraction + raw waveform<br>→ aligned to EEG windows</div></div>
+    <div class="c p"><div class="ct">Temporal Alignment</div><div class="cb">EEG + GSR + PPG all aligned<br>to same time windows</div></div>
+  </div>
+</div>
+<div class="arr">↓</div>
+
+<!-- P3 -->
+<div class="ph">
+  <div class="ph-hd"><span class="ph-num" style="background:rgba(124,58,237,.1);color:var(--accent2)">PHASE 03</span><span class="ph-ttl">Feature Extraction via STFT / Wavelet</span><div class="ph-ln"></div></div>
+  <div class="grid g2">
+    <div class="c p"><div class="tg">Affective</div><div class="ct">Affective Features (DEAP)</div><div class="cb"><strong>Frontal α asymmetry</strong> → F3,F4 — emotion valence<br><strong>θ–α band power</strong> → absolute + relative power<br><strong>Differential entropy</strong> → DE = ½log(2πeσ²)<br><strong>ERP amplitude</strong> → emotional stimulus response<br><strong>Electrodes:</strong> Fp1,Fp2,F3,F4 | <strong>Bands:</strong> θ,α</div></div>
+    <div class="c b"><div class="tg">Cognitive</div><div class="ct">Cognitive Features (PhyAAt)</div><div class="cb"><strong>θ/β ratio</strong> → cognitive load indicator<br><strong>Sustained β activity</strong> → task engagement<br><strong>Fronto-parietal coherence</strong> → cognitive control<br><strong>STFT energy dynamics</strong> → semantic vs non-semantic<br><strong>Electrodes:</strong> Fz,Cz,Pz | <strong>Bands:</strong> θ,β</div></div>
+    <div class="c g"><div class="tg">Affecto-Cognitive</div><div class="ct">Cross-Domain Features</div><div class="cb"><strong>θ–γ coupling</strong> → emotion–cognition interaction (PAC)<br><strong>α suppression</strong> → attention-related modulation<br><strong>Frontal–central integration</strong> → coherence/graph metrics<br><strong>Electrodes:</strong> Frontal–Central | <strong>Bands:</strong> θ,γ</div></div>
+    <div class="c r"><div class="tg">Clinical</div><div class="ct">Clinical Risk Features</div><div class="cb"><strong>Reduced entropy</strong> → neural flexibility loss<br><strong>Disrupted coherence</strong> → network dysfunction<br><strong>Sample entropy + Hurst index</strong> → disease markers<br><strong>Reduced node centrality</strong> → frontal hub impairment<br><strong>Bands:</strong> δ–γ broad</div></div>
+  </div>
+</div>
+<div class="arr">↓</div>
+
+<!-- P4 -->
+<div class="ph">
+  <div class="ph-hd"><span class="ph-num" style="background:rgba(245,158,11,.1);color:var(--accent4)">PHASE 04</span><span class="ph-ttl">Feature Selection — Multi-Objective BGWO</span><div class="ph-ln"></div></div>
+  <div class="grid g3">
+    <div class="c a"><div class="ct">🎯 Maximize</div><div class="cb">Affective accuracy<br>Cognitive accuracy<br>Clinical-risk sensitivity</div></div>
+    <div class="c a"><div class="ct">📉 Minimize</div><div class="cb">Inconclusive/uncertain rate<br>Feature redundancy<br>Computational cost</div></div>
+    <div class="c a"><div class="ct">✂️ Output</div><div class="cb">Relevant electrode subset<br>Relevant brain band subset<br>Task-specific token subsets<br>→ <strong>Pareto-optimal feature set</strong></div></div>
+  </div>
+</div>
+<div class="arr">↓</div>
+
+<!-- P5 -->
+<div class="ph">
+  <div class="ph-hd"><span class="ph-num" style="background:rgba(124,58,237,.1);color:var(--accent2)">PHASE 05</span><span class="ph-ttl">Deep Learning Models (All trained in parallel)</span><div class="ph-ln"></div></div>
+  <div class="grid g5">
+    <div class="c b"><div class="tg">Baseline 1</div><div class="ct">ResNet-1D</div><div class="cb"><strong>In:</strong> Raw EEG C×T<br><strong>Key:</strong> Residual blocks<br><strong>Optimizer:</strong> AdamW<br>Hierarchical temporal</div></div>
+    <div class="c b"><div class="tg">Baseline 2</div><div class="ct">DenseNet-1D</div><div class="cb"><strong>In:</strong> Raw EEG C×T<br><strong>Key:</strong> Dense connect<br><strong>Optimizer:</strong> AdamW<br>Feature reuse</div></div>
+    <div class="c b"><div class="tg">Baseline 3</div><div class="ct">CNN + GRU</div><div class="cb"><strong>In:</strong> STFT C×F×T<br><strong>Key:</strong> CNN+BiGRU<br><strong>Optimizer:</strong> AdamW<br>Local+temporal</div></div>
+    <div class="c b"><div class="tg">Baseline 4</div><div class="ct">CNN + Transformer</div><div class="cb"><strong>In:</strong> EEG patches<br><strong>Key:</strong> Self-attention ×4<br><strong>Optimizer:</strong> AdamW<br>Long-range deps</div></div>
+    <div class="c p" style="border-width:2px"><div class="tg">⭐ Proposed</div><div class="ct">ST-MAGATFormer</div><div class="cb"><strong>In:</strong> Spectral tokens<br><strong>Key:</strong> GAT+Transformer<br>+Cross-modal+Adversarial<br><strong>Optimizer:</strong> AdamW</div></div>
+  </div>
+  <div style="margin-top:14px;background:rgba(124,58,237,.05);border:1px solid rgba(124,58,237,.2);border-radius:9px;padding:16px;">
+    <div style="font-size:11px;font-weight:700;color:#a78bfa;margin-bottom:10px;letter-spacing:1px;">ST-MAGATFormer Internal Flow → Z_s</div>
+    <div style="display:flex;flex-wrap:wrap;gap:7px;align-items:center;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted)">
+      <span style="background:rgba(124,58,237,.15);color:#a78bfa;padding:4px 9px;border-radius:4px;">EEG Input</span><span style="color:var(--accent2)">→</span>
+      <span style="background:rgba(0,212,255,.1);color:var(--accent1);padding:4px 9px;border-radius:4px;">STFT → Spectral Tokens</span><span style="color:var(--accent2)">→</span>
+      <span style="background:rgba(0,212,255,.1);color:var(--accent1);padding:4px 9px;border-radius:4px;">Graph Attention (Channels)</span><span style="color:var(--accent2)">→</span>
+      <span style="background:rgba(0,212,255,.1);color:var(--accent1);padding:4px 9px;border-radius:4px;">Adaptive Freq-Time Transformer ×4</span><span style="color:var(--accent2)">→</span>
+      <span style="background:rgba(16,185,129,.1);color:var(--accent3);padding:4px 9px;border-radius:4px;">Cross-Modal Attention (GSR/PPG)</span><span style="color:var(--accent2)">→</span>
+      <span style="background:rgba(239,68,68,.1);color:var(--accent5);padding:4px 9px;border-radius:4px;">Adversarial Subject-Invariant</span><span style="color:var(--accent2)">→</span>
+      <span style="background:rgba(124,58,237,.15);color:#a78bfa;padding:4px 9px;border-radius:4px;font-weight:700;">Z_s Latent Representation</span>
+    </div>
+  </div>
+</div>
+<div class="arr">↓</div>
+
+<!-- P6 -->
+<div class="ph">
+  <div class="ph-hd"><span class="ph-num" style="background:rgba(16,185,129,.1);color:var(--accent3)">PHASE 06</span><span class="ph-ttl">Training Strategy</span><div class="ph-ln"></div></div>
+  <div class="grid g3">
+    <div class="c g"><div class="ct">🔄 LOSO (Primary)</div><div class="cb">Leave-One-Subject-Out<br>Train on N-1 subjects<br>Test on held-out subject<br>→ <strong>fold_###.json per fold</strong></div></div>
+    <div class="c g"><div class="ct">📊 Within-Subject (Secondary)</div><div class="cb">70% train / 15% val / 15% test<br>Early stopping on val F1<br>Patience = 20 epochs</div></div>
+    <div class="c g"><div class="ct">⚙️ Regularization</div><div class="cb">Dropout 0.3–0.5<br>Label smoothing 0.1<br>Gradient clipping (GRU)<br>AdamW weight decay</div></div>
+  </div>
+  <div style="margin-top:10px"><div class="c g"><div class="ct">Multi-Task Loss</div><div class="cb" style="font-size:11px;"><strong style="color:var(--accent3)">ℒ = α·ℒ_aff + β·ℒ_cog + γ·ℒ_clin + λ·ℒ_reg</strong> &nbsp;— activated only if labels exist for the dataset</div></div></div>
+</div>
+<div class="arr">↓</div>
+
+<!-- P7 -->
+<div class="ph">
+  <div class="ph-hd"><span class="ph-num" style="background:rgba(245,158,11,.1);color:var(--accent4)">PHASE 07</span><span class="ph-ttl">Multi-Head Classification Layer (identical across all models)</span><div class="ph-ln"></div></div>
+  <div class="grid g3">
+    <div class="c a"><div class="tg">Head 1</div><div class="ct">😤 Affective Head</div><div class="cb">ŷ_aff = Softmax(W_a · Z_s + b_a)<br><strong>Output:</strong> Valence Low/High<br><strong>Output:</strong> Arousal Low/High<br><strong>Score:</strong> P_aff ∈ [0,1]</div></div>
+    <div class="c a"><div class="tg">Head 2</div><div class="ct">🧩 Cognitive Head</div><div class="cb">ŷ_cog = Softmax(W_c · Z_s + b_c)<br><strong>Output:</strong> Cog Load Low/High<br><strong>Score:</strong> P_cog ∈ [0,1]</div></div>
+    <div class="c a"><div class="tg">Head 3</div><div class="ct">🏥 Clinical Head</div><div class="cb">ŷ_clin = Softmax(W_cl · Z_s + b_cl)<br><strong>Output:</strong> Control / High-risk<br><strong>Score:</strong> P_clin ∈ [0,1]</div></div>
+  </div>
+</div>
+<div class="arr">↓</div>
+
+<!-- P8 -->
+<div class="ph">
+  <div class="ph-hd"><span class="ph-num" style="background:rgba(0,212,255,.1);color:var(--accent1)">PHASE 08</span><span class="ph-ttl">Window → Subject Aggregation</span><div class="ph-ln"></div></div>
+  <div class="c b"><div class="cb" style="font-size:11.5px;line-height:2;">Each subject has <strong>N overlapping windows</strong>, each producing a probability vector<br><strong style="color:var(--accent1)">p̄ˢ = (1/N) Σᵢ pᵢˢ</strong> → mean across all windows = subject-level probabilities [P_aff, P_cog, P_clin]<br>Also compute: <strong>Var(pᵢˢ)</strong> = variance across windows → triggers Inconclusive if &gt; threshold τ</div></div>
+</div>
+<div class="arr">↓</div>
+
+<!-- P9 -->
+<div class="ph">
+  <div class="ph-hd"><span class="ph-num" style="background:rgba(239,68,68,.1);color:var(--accent5)">PHASE 09</span><span class="ph-ttl">Subject-Level Decision Logic — Final Label</span><div class="ph-ln"></div></div>
+  <div class="dc-grid">
+    <div class="dc" style="border-color:rgba(245,158,11,.3)"><div class="rule">P_aff &gt; 0.6<br>AND P_cog ≤ 0.6</div><div class="out" style="color:var(--accent4)">😤 AFFECTIVE</div></div>
+    <div class="dc" style="border-color:rgba(0,212,255,.3)"><div class="rule">P_cog &gt; 0.6<br>AND P_aff ≤ 0.6</div><div class="out" style="color:var(--accent1)">🧩 COGNITIVE</div></div>
+    <div class="dc" style="border-color:rgba(124,58,237,.3)"><div class="rule">P_aff &gt; 0.6<br>AND P_cog &gt; 0.6</div><div class="out" style="color:#a78bfa">🔀 AFFECTO-COGNITIVE</div></div>
+    <div class="dc" style="border-color:rgba(239,68,68,.3)"><div class="rule">P_clin &gt; 0.7<br>(any above)</div><div class="out" style="color:var(--accent5)">🏥 CLINICALLY IMPAIRED</div></div>
+    <div class="dc" style="border-color:rgba(100,116,139,.3)"><div class="rule">Var(pᵢˢ)<br>&gt; threshold τ</div><div class="out" style="color:var(--muted)">❓ INCONCLUSIVE</div></div>
+  </div>
+</div>
+<div class="arr">↓</div>
+
+<!-- P10 OUTPUTS -->
+<div class="ph">
+  <div class="ph-hd"><span class="ph-num" style="background:rgba(16,185,129,.1);color:var(--accent3)">PHASE 10</span><span class="ph-ttl">Complete Outputs You Must Produce</span><div class="ph-ln"></div></div>
+  <div class="out-wrap">
+
+    <div class="out-sec">
+      <div class="out-ttl" style="color:var(--accent1)">📊 A. Metrics Per Dataset</div>
+      <table class="tbl">
+        <tr><th>Dataset</th><th>Accuracy</th><th>F1-Score</th><th>AUC</th><th>Sensitivity</th><th>Specificity</th><th>Bal. Accuracy</th></tr>
+        <tr><td>Deep EEG</td><td class="hi">✓</td><td class="hi">✓</td><td class="hi">✓</td><td>—</td><td>—</td><td>—</td></tr>
+        <tr><td>PhyAAt</td><td class="hi">✓ aff + cog</td><td class="hi">✓</td><td>—</td><td>—</td><td>—</td><td class="hi">✓</td></tr>
+        <tr><td>Clinical</td><td>—</td><td>—</td><td class="hi">ROC-AUC ✓</td><td class="hi">✓</td><td class="hi">✓</td><td class="hi">✓</td></tr>
+      </table>
+    </div>
+
+    <div class="out-sec">
+      <div class="out-ttl" style="color:var(--accent3)">📁 B. File Outputs (per model per dataset)</div>
+      <ul class="cl">
+        <li><span class="ck">✓</span><div><strong>fold_###.json</strong> — per fold: metrics + y_true + y_pred + y_prob + subject_label + confidence</div></li>
+        <li><span class="ck">✓</span><div><strong>loso_summary.json</strong> — mean ± std of all metrics across all folds</div></li>
+        <li><span class="ck">✓</span><div><strong>fusion_attn.jsonl</strong> — cross-modal attention weights (ST-MAGATFormer + PhyAAt only)</div></li>
+        <li><span class="ck">✓</span><div><strong>temporal_attn.jsonl</strong> — time-window importance weights per subject</div></li>
+        <li><span class="ck">✓</span><div><strong>spectral_attn.jsonl</strong> — frequency band weights δ,θ,α,β,γ per subject</div></li>
+        <li><span class="ck">✓</span><div><strong>channel_connectivity.npy</strong> — GAT edge weight matrix (electrodes × electrodes)</div></li>
+        <li><span class="ck">✓</span><div><strong>subject_embeddings.npy</strong> — Z_s latent vector per subject (for t-SNE / visualization)</div></li>
+      </ul>
+    </div>
+
+    <div class="out-sec">
+      <div class="out-ttl" style="color:var(--accent4)">👤 C. Per-Subject JSON Record (inside fold_###.json)</div>
+      <div style="background:rgba(0,0,0,.3);border-radius:7px;padding:13px;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--muted);line-height:1.85">
+        {<br>
+        &nbsp;&nbsp;<span style="color:#a78bfa">"subject_id"</span>: <span style="color:var(--accent3)">"s01"</span>,<br>
+        &nbsp;&nbsp;<span style="color:#a78bfa">"P_aff"</span>: <span style="color:var(--accent1)">0.72</span>,&nbsp;<span style="color:#a78bfa">"P_cog"</span>: <span style="color:var(--accent1)">0.41</span>,&nbsp;<span style="color:#a78bfa">"P_clin"</span>: <span style="color:var(--accent1)">0.18</span>,<br>
+        &nbsp;&nbsp;<span style="color:#a78bfa">"window_variance"</span>: <span style="color:var(--accent1)">0.04</span>,<br>
+        &nbsp;&nbsp;<span style="color:#a78bfa">"final_label"</span>: <span style="color:var(--accent4)">"Affective"</span>,<br>
+        &nbsp;&nbsp;<span style="color:#a78bfa">"confidence"</span>: <span style="color:var(--accent1)">0.86</span>,<br>
+        &nbsp;&nbsp;<span style="color:#a78bfa">"metrics"</span>: { <span style="color:#a78bfa">"accuracy"</span>: 0.87, <span style="color:#a78bfa">"f1"</span>: 0.85, <span style="color:#a78bfa">"auc"</span>: 0.91, <span style="color:#a78bfa">"sensitivity"</span>: 0.83 },<br>
+        &nbsp;&nbsp;<span style="color:#a78bfa">"y_true"</span>: [0,1,0,...], <span style="color:#a78bfa">"y_pred"</span>: [0,1,1,...], <span style="color:#a78bfa">"y_prob"</span>: [[0.1,0.8,0.1],...]<br>
+        }
+      </div>
+    </div>
+
+    <div class="out-sec">
+      <div class="out-ttl" style="color:#a78bfa">📋 D. Final Paper Comparison Table</div>
+      <table class="tbl">
+        <tr><th>Model</th><th>DEAP Acc</th><th>DEAP F1</th><th>PhyAAt Acc</th><th>PhyAAt F1</th><th>Clin Sens</th><th>Clin AUC</th></tr>
+        <tr><td>ResNet-1D</td><td>?±?</td><td>?±?</td><td>?±?</td><td>?±?</td><td>?±?</td><td>?±?</td></tr>
+        <tr><td>DenseNet-1D</td><td>?±?</td><td>?±?</td><td>?±?</td><td>?±?</td><td>?±?</td><td>?±?</td></tr>
+        <tr><td>CNN+GRU</td><td>?±?</td><td>?±?</td><td>?±?</td><td>?±?</td><td>?±?</td><td>?±?</td></tr>
+        <tr><td>CNN+Transformer</td><td>?±?</td><td>?±?</td><td>?±?</td><td>?±?</td><td>?±?</td><td>?±?</td></tr>
+        <tr style="background:rgba(124,58,237,.08)"><td style="color:#a78bfa;font-weight:700">ST-MAGATFormer ⭐</td><td class="hi">BEST</td><td class="hi">BEST</td><td class="hi">BEST</td><td class="hi">BEST</td><td class="hi">BEST</td><td class="hi">BEST</td></tr>
+      </table>
+    </div>
+
+    <div class="out-sec">
+      <div class="out-ttl" style="color:var(--accent5)">🔍 E. Interpretability Visualizations (for paper figures)</div>
+      <div class="grid g2" style="margin-top:0">
+        <div class="c r" style="padding:13px 15px"><div class="ct">Temporal Attention Map</div><div class="cb">Which time windows mattered most<br>→ salient EEG epochs per subject<br>→ average across transformer heads</div></div>
+        <div class="c r" style="padding:13px 15px"><div class="ct">Spectral Attention Map</div><div class="cb">Which frequency bands mattered<br>→ δ,θ,α,β,γ importance weights<br>→ α–β dominant in affective tasks</div></div>
+        <div class="c r" style="padding:13px 15px"><div class="ct">Channel Connectivity Graph</div><div class="cb">GAT edge weights → electrode network<br>→ top-k connections plotted<br>→ fronto-parietal patterns expected</div></div>
+        <div class="c r" style="padding:13px 15px"><div class="ct">Cross-Modal Attention (PhyAAt)</div><div class="cb">EEG tokens ↔ GSR/PPG tokens<br>→ shows physiological modulation<br>→ validates multimodal fusion</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- STATUS -->
+<div class="ph" style="margin-top:28px">
+  <div class="ph-hd"><span class="ph-num" style="background:rgba(16,185,129,.1);color:var(--accent3)">STATUS</span><span class="ph-ttl">Your Current Experiment Progress</span><div class="ph-ln"></div></div>
+  <div class="st-grid">
+    <div class="st-row"><div class="dot dg"></div><span class="sn">PhyAAt / CNN</span><span class="sv">✅ 25/25 folds done</span></div>
+    <div class="st-row"><div class="dot dg"></div><span class="sn">PhyAAt / ResNet1D</span><span class="sv">✅ 25/25 folds done</span></div>
+    <div class="st-row"><div class="dot dg"></div><span class="sn">PhyAAt / DenseNet1D</span><span class="sv">✅ 25/25 folds done</span></div>
+    <div class="st-row"><div class="dot dg"></div><span class="sn">PhyAAt / ST-MAGATFormer</span><span class="sv">✅ 25/25 folds done</span></div>
+    <div class="st-row"><div class="dot dy"></div><span class="sn">PhyAAt / CNN+GRU</span><span class="sv">⏳ need folds 1–24</span></div>
+    <div class="st-row"><div class="dot dy"></div><span class="sn">PhyAAt / CNN+Transformer</span><span class="sv">⏳ need folds 1–24</span></div>
+    <div class="st-row"><div class="dot dr"></div><span class="sn">DEAP / All 5 models</span><span class="sv">❌ only fold_000 each</span></div>
+    <div class="st-row"><div class="dot dr"></div><span class="sn">Clinical / CNN + others</span><span class="sv">❌ only fold_000</span></div>
+  </div>
+</div>
+
+<div style="text-align:center;margin-top:44px;padding-bottom:36px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);">
+  ST-MAGATFormer Pipeline · EEG Affective · Cognitive · Clinical Classification
+</div>
+</div>
+</body>
+</html>
